@@ -2,6 +2,10 @@
 
 The original [DeepMind Lab github](https://github.com/deepmind/lab).
 
+## Note: 
+
+If you get a checksum error, replace the corresponding checksum in WORKSPACE with the checksum that is expected
+
 ## Running an environment
 
 It is important to note that asset generation can take **up to 10 minutes** when performed for the first time. Just be patient!

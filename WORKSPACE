@@ -31,7 +31,7 @@ new_http_archive(
 new_http_archive(
     name = "jpeg_archive",
     build_file = "jpeg.BUILD",
-    sha256 = "39e111cd9da5e72a589b98feeded334bb0e5776511e507e3d811ab25a213a3cd",
+    sha256 = "650250979303a649e21f87b5ccd02672af1ea6954b911342ea491f351ceb7122",
     strip_prefix = "jpeg-9c",
     url = "http://www.ijg.org/files/jpegsrc.v9c.tar.gz",
 )
