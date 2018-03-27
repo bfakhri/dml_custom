@@ -23,15 +23,17 @@ local timeout = require 'decorators.timeout'
 local api = {}
 
 local MAP_ENTITIES = [[
-*********
-*       *
-*       *
-*       *
-*   P   *
-*       *
-*       *
-*       *
-*********
+***********
+*         *
+*         *
+*         *
+*** A S ***
+*MI  P  IG*
+*** L F ***
+*         *
+*   *H*   *
+*   *W*   *
+***********
 ]]
 
 function api:init(params)
@@ -51,10 +53,14 @@ end
 function api:updateSpawnVars(spawnVars)
   if spawnVars.classname == "info_player_start" then
     -- Spawn facing East.
-    spawnVars.angle = "0"
+    spawnVars.angle = "270"
     spawnVars.randomAngleRange = "0"
   end
   return spawnVars
+end
+
+function api:createPickup(className)
+  return pickups.defaults[className]
 end
 
 timeout.decorate(api, 60 * 60)

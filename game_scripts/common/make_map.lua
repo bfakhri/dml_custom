@@ -23,7 +23,12 @@ local make_map = {}
 
 local PICKUPS = {
     A = 'apple_reward',
+    S = 'strawberry_reward',
+    L = 'lemon_reward',
+    F = 'fungi_reward',
     G = 'goal',
+    W = 'watermelon_goal',
+    M = 'mango_goal',
 }
 
 local SKYBOX_TEXTURE_NAME = 'map/lab_games/sky/lg_sky_03'

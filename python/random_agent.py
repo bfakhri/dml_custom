@@ -137,6 +137,7 @@ class SpringAgent(object):
 
 
 def run(length, width, height, fps, level):
+  print('Testing')
   """Spins up an environment and runs the random agent."""
   env = deepmind_lab.Lab(
       level, ['RGB_INTERLACED'],
@@ -160,6 +161,10 @@ def run(length, width, height, fps, level):
       env.reset()
       agent.reset()
     obs = env.observations()
+
+    print(obs)
+    print("------------------")
+
     action = agent.step(reward, obs['RGB_INTERLACED'])
     reward = env.step(action, num_steps=1)
 
@@ -179,7 +184,8 @@ if __name__ == '__main__':
                       help='Number of frames per second')
   parser.add_argument('--runfiles_path', type=str, default=None,
                       help='Set the runfiles path to find DeepMind Lab data')
-  parser.add_argument('--level_script', type=str, default='tests/demo_map',
+                      """This is where the level is set for the agent"""
+  parser.add_argument('--level_script', type=str, default='tests/empty_room_test',
                       help='The environment level script to load')
 
   args = parser.parse_args()

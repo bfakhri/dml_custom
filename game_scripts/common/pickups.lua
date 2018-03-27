@@ -43,7 +43,7 @@ pickups.defaults = {
       name = 'Apple',
       classname = 'apple_reward',
       model = 'models/apple.md3',
-      quantity = 1,
+      quantity = 7,
       type = pickups.type.REWARD
   },
   lemon_reward = {

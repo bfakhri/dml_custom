@@ -1,80 +1,31 @@
-# <img src="docs/logo.png" alt="DeepMind Lab">
+## Original
 
-*DeepMind Lab* is a 3D learning environment based on id Software's
-[Quake III Arena](https://github.com/id-Software/Quake-III-Arena) via
-[ioquake3](https://github.com/ioquake/ioq3) and
-[other open source software](#upstream-sources).
+The original [DeepMind Lab github](https://github.com/deepmind/lab).
 
-<div align="center">
-  <a href="https://www.youtube.com/watch?v=M40rN7afngY"
-     target="_blank">
-    <img src="http://img.youtube.com/vi/M40rN7afngY/0.jpg"
-         alt="DeepMind Lab - Nav Maze Level 1"
-         width="240" height="180" border="10" />
-  </a>
-  <a href="https://www.youtube.com/watch?v=gC_e8AHzvOw"
-     target="_blank">
-    <img src="http://img.youtube.com/vi/gC_e8AHzvOw/0.jpg"
-         alt="DeepMind Lab - Stairway to Melon Level"
-         width="240" height="180" border="10" />
-  </a>
-  <a href="https://www.youtube.com/watch?v=7syZ42HWhHE"
-     target="_blank">
-    <img src="http://img.youtube.com/vi/7syZ42HWhHE/0.jpg"
-         alt="DeepMind Lab - Laser Tag Space Bounce Level (Hard)"
-         width="240" height="180" border="10" />
-  </a>
-  <br /><br />
-</div>
+## Running an environment
 
-*DeepMind Lab* provides a suite of challenging 3D navigation and puzzle-solving
-tasks for learning agents. Its primary purpose is to act as a testbed for
-research in artificial intelligence, especially deep reinforcement learning.
-
-## About
-
-Disclaimer: This is not an official Google product.
-
-If you use *DeepMind Lab* in your research and would like to cite
-the *DeepMind Lab* environment, we suggest you cite
-the [DeepMind Lab paper](https://arxiv.org/abs/1612.03801).
-
-You can reach us at [lab@deepmind.com](mailto:lab@deepmind.com).
-
-## Getting started on Linux
-
-* Get [Bazel from bazel.io](https://docs.bazel.build/versions/master/install.html).
-
-* Clone DeepMind Lab, e.g. by running
-
-```shell
-$ git clone https://github.com/deepmind/lab
-$ cd lab
-```
-
-For a live example of a random agent, run
-
-```shell
-lab$ bazel run :python_random_agent --define graphics=sdl -- \
-               --length=10000 --width=640 --height=480
-```
-
-Here is some [more detailed build documentation](docs/build.md),
-including how to install dependencies if you don't have them.
+It is important to note that asset generation can take **up to 10 minutes** when performed for the first time. Just be patient!
 
 ### Play as a human
 
-To test the game using human input controls, run
-
 ```shell
-lab$ bazel run :game -- --level_script=tests/empty_room_test --level_setting=logToStdErr=true
-# or:
-lab$ bazel run :game -- -l tests/empty_room_test -s logToStdErr=true
+cd lab
+
+lab$ bazel run :game -- -l tests/empty_room_test -s logToStdErr=false
+# is short for
+lab$ bazel run :game -- --level_script=tests/empty_room_test --level_setting=logToStdErr=false
 ```
 
-Leave the `logToStdErr` setting off to disable most log output.
+### Run a random agent
+
+```shell
+lab$ bazel run :python_random_agent --define graphics=sdl -- \
+	       --length=10000 --width=640 --height=480
+```
 
 ### Train an agent
+
+*Taken directly from [Deepmind Lab](https://github.com/deepmind/lab).
 
 *DeepMind Lab* ships with an example random agent in
 [`python/random_agent.py`](python/random_agent.py)
@@ -94,68 +45,76 @@ as described in [docs/lua_api.md](docs/lua_api.md).
 
 -----------------
 
-## Upstream sources
+## Editing the files
 
-*DeepMind Lab* is built from the *ioquake3* game engine, and it uses the tools
-*q3map2* and *bspc* for map creation. Bug fixes and cleanups that originate
-with those projects are best fixed upstream and then merged into *DeepMind Lab*.
+### Reward Values
 
-* *bspc* is taken from [github.com/TTimo/bspc](https://github.com/TTimo/bspc),
-  revision d9a372db3fb6163bc49ead41c76c801a3d14cf80. There are virtually no
-  local modifications, although we integrate this code with the main ioq3 code
-  and do not use their copy in the `deps` directory. We expect this code to be
-  stable.
+```lab/game_scripts/common/pickups.lua```
 
-* *q3map2* is taken from
-  [github.com/TTimo/GtkRadiant](https://github.com/TTimo/GtkRadiant),
-  revision d3d00345c542c8d7cc74e2e8a577bdf76f79c701. A few minor local
-  modifications add synchronization. We also expect this code to be stable.
+pickups.lua is where all of the player-available pickups are listed, along with their names, 3D model reference, and their reward (refered to as quantity in the code). This is also where each pickup is defined as either a pickup item or a goal item. Goal items are the same as pickup items, with the exception that they will reset the level upon pickup.
 
-* *ioquake3* is taken from
-  [github.com/ioquake/ioq3](https://github.com/ioquake/ioq3),
-  revision 690c5a4dac3c3d0d59ee271aadd8f19a29a9f338. The code contains extensive
-  modifications and additions. We aim to merge upstream changes occasionally.
+### Level Layout
 
-We are very grateful to the maintainers of these repositories for all their hard
-work on maintaining high-quality code bases.
+```lab/game_scripts/levels```
 
-## External dependencies, prerequisites and porting notes
+This is where the playable levels exist. For this example, we will be using the test level empty_room_test.lua, located at:
 
-*DeepMind Lab* currently ships as source code only. It depends on a few external
-software libraries, which we ship in several different ways:
+```lab/game_scripts/levels/tests/empty_room_test.lua```
 
- * The `zlib`, `glib`, `libxml2`, `jpeg` and `png` libraries are referenced as
-   external Bazel sources, and Bazel BUILD files are provided. The dependent
-   code itself should be fairly portable, but the BUILD rules we ship are
-   specific to Linux on x86. To build on a different platform you will most
-   likely have to edit those BUILD files.
+DeepMind includes a text-to-tile level-generating parser. The level layout in empty_room_test.lua is as follows:
 
- * Message digest algorithms are included in this package (in
-   [`//third_party/md`](third_party/md)), taken from the reference
-   implementations of their respective RFCs. A "generic reinforcement learning
-   API" is included in [`//third_party/rl_api`](third_party/rl_api), which has
-   also been created by the *DeepMind Lab* authors. This code is portable.
+```
+local MAP_ENTITIES = [[
+***********
+*         *
+*    P    *
+*         *
+*** A S ***
+*MI     IG*
+*** L F ***
+*         *
+*   *H*   *
+*   *W*   *
+***********
+]]
+```
 
- * EGL headers are included in this package (in
-   `//third_party/GL/{`[`EGL`](third_party/GL/EGL)`,`[`KHR`](third_party/GL/KHR)`}`),
-   taken from the Khronos OpenGL/OpenGL ES XML API Registry at
-   [www.khronos.org/registry/EGL](http://www.khronos.org/registry/EGL/). The
-   headers have been modified slightly to remove the dependency of EGL on X.
+The key is as follows:
 
- * Several additional libraries are required but are not shipped in any form;
-   they must be present on your system:
-   * SDL 2
-   * Lua 5.1 (later versions might work, too)
-   * gettext (required by `glib`)
-   * OpenGL: A hardware driver and library are needed for hardware-accelerated
-     human play. The headless library that machine learning agents will want to
-     use can use either hardware-accelerated rendering via EGL or GLX or
-     software rendering via OSMesa, depending on the `--define headless=...`
-     build setting.
-   * Python 2.7 (other versions might work, too) with NumPy and PIL. (A few
-     tests require a NumPy version of at least 1.8.)
+Asterisk (*): Wall
+Space ( ): Empty tile
+I: North-South sliding door
+H: East-West sliding door
 
-The build rules are using a few compiler settings that are specific to GCC. If
-some flags are not recognized by your compiler (typically those would be
-specific warning suppressions), you may have to edit those flags. The warnings
-should be noisy but harmless.
+P: Player spawn
+
+A: Apple
+F: Fungus
+L: Lemon
+S: Strawberry
+
+G: Goal
+M: Mango
+W: Watermelon
+
+### Extra Entities
+
+DeepMind provides an additional function to place extra pickups onto the map in completely custom locations, and with completely custom rewards.
+
+An example of the function in use is given in: 
+```lab/game_scripts/levels//tests/extra_entities_test.lua```
+
+In this file, note that the ```MAP_ENTITIES``` is a simple 7x7 room with the player spawn at the center. The function ```api:extraEntities``` allows the user to define a list of additional entities to be included, following the form:
+
+```
+return {
+      {
+          classname = 'apple_reward',
+          origin = '550 450 30',
+          count = '1',
+      },
+      ...
+}
+```
+
+The ```classname``` is the same that is defined in pickups.lua. The ```origin``` is the x, y, z coordinates in 3D space that the pickup will spawn at. The ```count``` is the reward the object will give. Note that this reward will only apply to this entity; If apples are defined in ```pickups.lua``` to have a reward (quantity) of 7, then all apples placed using ```MAP_ENTITIES``` will have a reward of 7, but this apple placed using ```api:extraEntities()``` will have a reward (count) of 1.
