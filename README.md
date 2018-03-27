@@ -25,7 +25,7 @@ lab$ bazel run :python_random_agent --define graphics=sdl -- \
 
 ### Train an agent
 
-*Taken directly from [Deepmind Lab](https://github.com/deepmind/lab).
+*Taken directly from [Deepmind Lab](https://github.com/deepmind/lab).*
 
 *DeepMind Lab* ships with an example random agent in
 [`python/random_agent.py`](python/random_agent.py)
@@ -81,21 +81,25 @@ local MAP_ENTITIES = [[
 
 The key is as follows:
 
-Asterisk (*): Wall
-Space ( ): Empty tile
-I: North-South sliding door
-H: East-West sliding door
+Environment:
+	- Asterisk (*): Wall
+	- Space ( ): Empty tile
+	- I: North-South sliding door
+	- H: East-West sliding door
 
-P: Player spawn
+Player:
+	- P: Player spawn
 
-A: Apple
-F: Fungus
-L: Lemon
-S: Strawberry
+Pickups:
+	- A: Apple
+	- F: Fungus
+	- L: Lemon
+	- S: Strawberry
 
-G: Goal
-M: Mango
-W: Watermelon
+Goals:
+	- G: Goal
+	- M: Mango
+	- W: Watermelon
 
 ### Extra Entities
 
