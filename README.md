@@ -2,9 +2,11 @@
 
 The original [DeepMind Lab github](https://github.com/deepmind/lab).
 
-## Note: 
+## Troubleshooting Notes: 
 
 If you get a checksum error, replace the corresponding checksum in WORKSPACE with the checksum that is expected
+
+If you get "configure: error: unsafe absolute working directory name", you must set a custom working directory that doesn't have any weird characters. This is done with "bazel --output_user_root=/path/to/directory YOUR_ORIGINAL_COMMAND"
 
 ## Running an environment
 
