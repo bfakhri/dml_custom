@@ -82,24 +82,24 @@ local MAP_ENTITIES = [[
 The key is as follows:
 
 Environment:
-	- Asterisk (*): Wall
-	- Space ( ): Empty tile
-	- I: North-South sliding door
-	- H: East-West sliding door
+- Asterisk (*): Wall
+- Space ( ): Empty tile
+- I: North-South sliding door
+- H: East-West sliding door
 
 Player:
-	- P: Player spawn
+- P: Player spawn
 
 Pickups:
-	- A: Apple
-	- F: Fungus
-	- L: Lemon
-	- S: Strawberry
+- A: Apple
+- F: Fungus
+- L: Lemon
+- S: Strawberry
 
 Goals:
-	- G: Goal
-	- M: Mango
-	- W: Watermelon
+- G: Goal
+- M: Mango
+- W: Watermelon
 
 ### Extra Entities
 
