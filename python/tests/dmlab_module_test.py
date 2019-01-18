@@ -25,6 +25,8 @@ import numpy as np
 
 import deepmind_lab
 
+for i in range(100):
+    print('Running test')
 
 class DeepMindLabTest(unittest.TestCase):
 
