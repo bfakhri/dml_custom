@@ -24,6 +24,10 @@ import random
 import numpy as np
 
 import deepmind_lab
+#import tensorflow as tf
+
+import sys
+print('PYTHON VERSION - ', sys.version)
 
 
 def _action(*entries):
@@ -71,6 +75,17 @@ class SpringAgent(object):
         0.0  # crouching
     ])
 
+    # Mask for off-limits actions
+    self.mask = np.array([
+        0,  # look left-right
+        0,  # look up-down
+        1,  # strafe left-right
+        1,  # forward-backward
+        0,  # fire
+        0,  # jumping
+        0  # crouching
+    ])
+
     self.velocity_scaling = np.array([2.5, 2.5, 0.01, 0.01, 1, 1, 1])
 
     self.indices = {a['name']: i for i, a in enumerate(self.action_spec)}
@@ -81,7 +96,7 @@ class SpringAgent(object):
     self.rewards = 0
 
   def critically_damped_derivative(self, t, omega, displacement, velocity):
-    r"""Critical damping for movement.
+    """Critical damping for movement.
 
     I.e., x(t) = (A + Bt) \exp(-\omega t) with A = x(0), B = x'(0) + \omega x(0)
 
@@ -109,6 +124,11 @@ class SpringAgent(object):
     action = (self.maxs - self.mins) * np.random.random_sample(
         size=[len(self.action_spec)]) + self.mins
 
+    # Mask with mask
+    action *= self.mask
+    # Always go forward
+    action[3] = -1
+
     # Compute the 'velocity' 1 time unit after a critical damped force
     # dragged us towards the random `action`, given our current velocity.
     self.velocity = self.critically_damped_derivative(1, self.omega, action,
@@ -119,11 +139,11 @@ class SpringAgent(object):
     self.action = self.velocity / self.velocity_scaling + 0.5 * self.action
 
     # Fire with p = 0.01 at each step
-    self.action[self.indices['FIRE']] = int(np.random.random() > 0.99)
+    #self.action[self.indices['FIRE']] = int(np.random.random() > 0.99)
 
     # Jump/crouch with p = 0.005 at each step
-    self.action[self.indices['JUMP']] = int(np.random.random() > 0.995)
-    self.action[self.indices['CROUCH']] = int(np.random.random() > 0.995)
+    #self.action[self.indices['JUMP']] = int(np.random.random() > 0.995)
+    #self.action[self.indices['CROUCH']] = int(np.random.random() > 0.995)
 
     # Clip to the valid range and convert to the right dtype
     return self.clip_action(self.action)
@@ -151,6 +171,7 @@ def run(length, width, height, fps, level):
 
   # Starts the random spring agent. As a simpler alternative, we could also
   # use DiscretizedRandomAgent().
+  print(env.action_spec())
   agent = SpringAgent(env.action_spec())
 
   reward = 0
@@ -162,11 +183,16 @@ def run(length, width, height, fps, level):
       agent.reset()
     obs = env.observations()
 
-    print(obs)
-    print("------------------")
+    #print(obs)
+    #print(obs.keys())
+    print(obs['RGB_INTERLACED'].shape)
+    #print(obs.shape)
+    #print("------------------")
 
     action = agent.step(reward, obs['RGB_INTERLACED'])
     reward = env.step(action, num_steps=1)
+    if(reward != 0):
+        print(reward)
 
   print('Finished after %i steps. Total reward received is %f'
         % (length, agent.rewards))
@@ -184,8 +210,8 @@ if __name__ == '__main__':
                       help='Number of frames per second')
   parser.add_argument('--runfiles_path', type=str, default=None,
                       help='Set the runfiles path to find DeepMind Lab data')
-                      """This is where the level is set for the agent"""
-  parser.add_argument('--level_script', type=str, default='tests/empty_room_test',
+                      #"""This is where the level is set for the agent"""
+  parser.add_argument('--level_script', type=str, default='tests/empty_room_test2',
                       help='The environment level script to load')
 
   args = parser.parse_args()
