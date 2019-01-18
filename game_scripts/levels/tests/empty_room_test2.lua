@@ -33,50 +33,36 @@ local api = {}
 --*         *
 --*         *
 --*         *
---*         *
---*         *
---*         *
---*         *
---*         *
---*         *
---*         *
---*         *
---*         *
---*         *
---*         *
---*         *
---*         *
---*         *
 --*GGGGGGGGG*
 --*WWWWWWWWW*
 --***********
 --]]
 local MAP_ENTITIES = [[
-***********
-*    P    *
-*       F *
-*A        *
-*         *
-*S        *
-*         *
-*   A   A *
-* A       *
-*         *
-*         *
-*         *
-*   S    S*
-*    AL L *
-* L   S   *
-*         *
-*    F   S*
-*     LF  *
-*         *
-*    L    *
-* F L   A *
-*         *
-*   G     *
-*WWWWWWWWW*
-***********
+************
+*    P     *
+*          *
+*F  F LL F *
+*F         *
+* L  LF   F*
+* L    L F *
+*  FF  L L *
+* L  L     *
+*     FF L *
+*         F*
+*F FFL F   *
+*  LLFF  L *
+* LL  L FF *
+*  F    L  *
+*  L   L LL*
+*       FF *
+*F  L   F  *
+*L F F  L L*
+*       LFF*
+* LL     F *
+*     F  FL*
+*   L      *
+*    G     *
+*WWWWWWWWWW*
 ]]
 
 function api:init(params)

@@ -6,6 +6,8 @@ Entry point into DeepMind Lab: 'python/random_agent.py'
 
 To run using this entry point, run: 'run_random_agent.sh'
 
+This is needed because BAZEL MUST BE RUN IN ORDER TO GET A WORKING DML IMPORT
+
 
 ## Original
 

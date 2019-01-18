@@ -1,7 +1,8 @@
 import numpy as np
 from random import shuffle
 
-#def make_map(width, length, obstacles):
+# This makes a map for use in the lau game scripts
+
 def make_map(width=10,length=20,obstacles=['F','L']*32):
     num_blanks = width*length - len(obstacles)
     obstacles += [' ']*num_blanks
