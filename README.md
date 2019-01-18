@@ -1,3 +1,12 @@
+## Important Paths
+
+Default Game Script: 'game_scripts/levels/tests/empty_room_test2.lua'
+
+Entry point into DeepMind Lab: 'python/random_agent.py'
+
+To run using this entry point, run: 'run_random_agent.sh'
+
+
 ## Original
 
 The original [DeepMind Lab github](https://github.com/deepmind/lab).
