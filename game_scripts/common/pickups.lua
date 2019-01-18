@@ -71,14 +71,14 @@ pickups.defaults = {
       name = 'Watermelon',
       classname = 'watermelon_goal',
       model = 'models/watermelon.md3',
-      quantity = 20,
+      quantity = 0,
       type = pickups.type.GOAL
   },
   goal = {
       name = 'Goal',
       classname = 'goal',
       model = 'models/goal_object_02.md3',
-      quantity = 10,
+      quantity = 100,
       type = pickups.type.GOAL
   },
   mango_goal = {
