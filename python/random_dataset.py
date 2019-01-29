@@ -155,65 +155,72 @@ class SpringAgent(object):
     self.action = np.zeros([len(self.action_spec)])
 
 
-def run(length, width, height, fps, level):
-  print('Testing')
-  """Spins up an environment and runs the random agent."""
-  env = deepmind_lab.Lab(
-      level, ['RGB_INTERLACED'],
-      config={
-          'fps': str(fps),
-          'width': str(width),
-          'height': str(height)
-      })
+class dml_dataset:
+    def __init__(self, length=100, width=28, height=28, fps=60, level='tests/empty_room_test2',):
+        """Spins up an environment and runs the random agent."""
+        self.length = length
+        self.width = width
+        self.height = height
+        self.shape = (None, width, height, 3)
+        self.env = deepmind_lab.Lab(
+          level, ['RGB_INTERLACED'],
+          config={
+              'fps': str(fps),
+              'width': str(width),
+              'height': str(height)
+          })
 
-  env.reset()
+        self.env.reset()
 
-  # Starts the random spring agent. As a simpler alternative, we could also
-  # use DiscretizedRandomAgent().
-  print(env.action_spec())
-  agent = SpringAgent(env.action_spec())
+        print(self.env.action_spec())
+        self.agent = SpringAgent(self.env.action_spec())
 
-  reward = 0
+        self.reward = 0
 
-  for _ in xrange(length):
-    if not env.is_running():
-      print('Environment stopped early')
-      env.reset()
-      agent.reset()
-    obs = env.observations()
+    def get_batch(self):
+        batch = np.zeros((self.length, self.width, self.height, 3), np.float)
+        for step in xrange(self.length):
+            if not self.env.is_running():
+                print('Environment stopped early')
+                self.env.reset()
+                self.agent.reset()
+            obs = self.env.observations()['RGB_INTERLACED']
+            batch[step,:,:,:] = obs
 
-    #print(obs)
-    #print(obs.keys())
-    print(obs['RGB_INTERLACED'].shape)
-    #print(obs.shape)
-    #print("------------------")
 
-    action = agent.step(reward, obs['RGB_INTERLACED'])
-    reward = env.step(action, num_steps=1)
-    if(reward != 0):
-        print(reward)
+        action = self.agent.step(self.reward, obs)
+        reward = self.env.step(action, num_steps=1)
 
-  print('Finished after %i steps. Total reward received is %f'
-        % (length, agent.rewards))
+        print('Finished after %i steps. Total reward received is %f'% (self.length, self.agent.rewards))
+        return batch
 
 
 if __name__ == '__main__':
-  parser = argparse.ArgumentParser(description=__doc__)
-  parser.add_argument('--length', type=int, default=1000,
+    ''' Test the class if run directly '''
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--length', type=int, default=100,
                       help='Number of steps to run the agent')
-  parser.add_argument('--width', type=int, default=80,
+    parser.add_argument('--width', type=int, default=80,
                       help='Horizontal size of the observations')
-  parser.add_argument('--height', type=int, default=80,
+    parser.add_argument('--height', type=int, default=80,
                       help='Vertical size of the observations')
-  parser.add_argument('--fps', type=int, default=60,
+    parser.add_argument('--fps', type=int, default=60,
                       help='Number of frames per second')
-  parser.add_argument('--runfiles_path', type=str, default=None,
+    parser.add_argument('--runfiles_path', type=str, default=None,
                       help='Set the runfiles path to find DeepMind Lab data')
                       #"""This is where the level is set for the agent"""
-  parser.add_argument('--level_script', type=str, default='tests/empty_room_test2',
+    parser.add_argument('--level_script', type=str, default='tests/empty_room_test2',
                       help='The environment level script to load')
 
-  args = parser.parse_args()
-  if args.runfiles_path:
-    deepmind_lab.set_runfiles_path(args.runfiles_path)
-  run(args.length, args.width, args.height, args.fps, args.level_script)
+    args = parser.parse_args()
+    if args.runfiles_path:
+        deepmind_lab.set_runfiles_path(args.runfiles_path)
+    ds = dml_dataset(args.length, args.width, args.height, args.fps, args.level_script)
+    #ds = dml_dataset(args.length, args.width, args.height, 6000000, args.level_script)
+
+    for i in range(100):
+        b = ds.get_batch()
+        #print(b)
+        print(b.shape)
+

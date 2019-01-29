@@ -13,8 +13,9 @@
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-"""Basic random agent for DeepMind Lab."""
 
+
+import tensorflow as tf
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function

@@ -953,6 +953,30 @@ py_binary(
     visibility = ["//python/tests:__subpackages__"],
 )
 
+py_binary(
+    name = "python_test_tf",
+    srcs = ["python/test_tf.py"],
+    data = [":deepmind_lab.so"],
+    main = "python/test_tf.py",
+    visibility = ["//python/tests:__subpackages__"],
+)
+
+py_binary(
+    name = "python_random_dataset",
+    srcs = ["python/random_dataset.py"],
+    data = [":deepmind_lab.so"],
+    main = "python/random_dataset.py",
+    visibility = ["//python/tests:__subpackages__"],
+)
+
+py_binary(
+    name = "python_train_model",
+    srcs = ["python/train_model.py"],
+    data = [":deepmind_lab.so"],
+    main = "python/train_model.py",
+    visibility = ["//python/tests:__subpackages__"],
+)
+
 LOAD_TEST_SCRIPTS = [
     level_script[len("game_scripts/levels"):-len(".lua")]
     for level_script in glob(["game_scripts/levels/*.lua"])
