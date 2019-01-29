@@ -71,7 +71,15 @@ function api:init(params)
       mapName = "empty_room",
       mapEntityLayer = MAP_ENTITIES,
       useSkybox = true,
+      -- These themes don't seem to work
       theme = "TETRIS"
+      --theme = "MISHMASH"
+      --theme = "TRON"
+      --theme = "MINESWEEPER"
+      --theme = "GO"
+      --theme = "PACMAN"
+      --theme = "INVISIBLE_WALLS"
+      --theme = "CAPTURE_THE_FLAG"
   }
 end
 
