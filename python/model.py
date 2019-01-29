@@ -75,12 +75,11 @@ class Model:
             
             # Here we implement spatial softmax
             conv2_exp = conv2
-            features = tf.reshape(tf.transpose(conv2_exp, [0, 3, 1, 2]), [-1, conv2.shape[1]*conv2.shape[2]])
+            features = tf.reshape(tf.transpose(conv2_exp, [0, 3, 1, 2]), [-1, conv2.shape[1]*conv2.shape[2]*conv2.shape[3]])
             conv2_ssm = tf.nn.softmax(features)
             # Reshape and transpose back to original format.
 
             self.conv2_ssm = tf.transpose(tf.reshape(conv2_ssm, [-1, 1, conv2.shape[1], conv2.shape[2]]), [0, 2, 3, 1])
-            print(self.conv2_ssm.shape)
             #conv2_ssm =  tf.contrib.layers.spatial_softmax(conv2, name='Conv2-ssm') 
             #tf.summary.image('conv2_viz_smm1', tf.expand_dims(conv2_ssm[:,:,:,0], axis=3), 3)
             tf.summary.image('conv2_viz_smm1', self.conv2_ssm[:,:,:], 3)
@@ -89,11 +88,12 @@ class Model:
             # Fully Connected Layers
             with tf.name_scope('FC1'):
                 h_flat = tf.layers.flatten(conv2_ssm)
-                W_fc1 = weight_variable([conv2_ssm.shape[1:].num_elements(), self.input.shape[1:].num_elements()])
+                W_fc1 = weight_variable([h_flat.shape[1:].num_elements(), self.input.shape[1:].num_elements()])
                 b_fc1 = bias_variable([self.input.shape[1:].num_elements()])
                 
                 self.input_hat = tf.nn.relu(tf.matmul(h_flat, W_fc1) + b_fc1)
                 self.input_hat = tf.reshape(self.input_hat, shape=(-1,)+self.input_shape[1:])
+                tf.summary.image('Recon', self.input_hat, 3)
 
 
             with tf.name_scope('Objective'):
@@ -116,13 +116,12 @@ class Model:
         self.writer = tf.summary.FileWriter(BASE_LOGDIR + RUN)
         self.writer.add_graph(self.sess.graph) 
 
-    def train_step(self, batch_x):
+    def train_step(self, batch_x, cur_step):
         with self.sess.as_default():
             all_sums_out, mse_out, ssm_out = self.sess.run([self.all_summaries, self.mse, self.conv2_ssm], feed_dict={self.input: batch_x})
-            print('Step: ' + str(cur_step) + '\t\tMSE: ' + str(train_accuracy))
-            print(sum(sum(sum(ssm_out))))
+            print('Step: ', str(cur_step), 'MSE: ' + str(mse_out))
             self.writer.add_summary(all_sums_out, cur_step) 
-            self.train.run(feed_dict={x: batch_x})
+            self.train.run(feed_dict={self.input: batch_x})
 
 
 

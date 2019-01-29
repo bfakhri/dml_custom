@@ -191,7 +191,7 @@ class dml_dataset:
         action = self.agent.step(self.reward, obs)
         reward = self.env.step(action, num_steps=1)
 
-        print('Finished after %i steps. Total reward received is %f'% (self.length, self.agent.rewards))
+        #print('Finished after %i steps. Total reward received is %f'% (self.length, self.agent.rewards))
         return batch
 
 
@@ -221,6 +221,4 @@ if __name__ == '__main__':
 
     for i in range(100):
         b = ds.get_batch()
-        #print(b)
-        print(b.shape)
 

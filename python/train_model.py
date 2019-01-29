@@ -21,6 +21,6 @@ import model
 ds = random_dataset.dml_dataset()
 model = model.Model(ds.shape)
 
-for i in range(100):
+for i in range(10000):
     batch = ds.get_batch()
-    model.train_step(batch)
+    model.train_step(batch, i)
