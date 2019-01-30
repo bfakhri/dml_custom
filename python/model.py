@@ -67,33 +67,52 @@ class Model:
             with tf.name_scope('Inputs'):
                 # Placeholders for data and labels
                 self.input = tf.placeholder(tf.float32, shape=input_shape)
-                tf.summary.image('sample_image', self.input, 3)
+                tf.summary.image('sample_image', self.input, 2)
 
             # Convolution Layers
-            conv1 = conv_layer(self.input, 3, 32, name='Conv1') 
-            conv2 = conv_layer(conv1, 32, 64, name='Conv2') 
+            conv1 = conv_layer(self.input, 3, 33, name='Conv1') 
+            conv2 = conv_layer(conv1, 33, 66, name='Conv2') 
             
-            # Here we implement spatial softmax
-            conv2_exp = conv2
-            features = tf.reshape(tf.transpose(conv2_exp, [0, 3, 1, 2]), [-1, conv2.shape[1]*conv2.shape[2]*conv2.shape[3]])
-            conv2_ssm = tf.nn.softmax(features)
-            # Reshape and transpose back to original format.
+            ## Here we implement spatial softmax
+            #features = tf.reshape(tf.transpose(conv2, [0, 3, 1, 2]), [-1, conv2.shape[1:].num_elements()])
+            #print(features.shape)
+            #conv2_ssm = tf.nn.softmax(features)
+            #print(conv2.shape)
+            #print(conv2_ssm.shape)
+            ## Reshape and transpose back to original format.
 
-            self.conv2_ssm = tf.transpose(tf.reshape(conv2_ssm, [-1, 1, conv2.shape[1], conv2.shape[2]]), [0, 2, 3, 1])
-            #conv2_ssm =  tf.contrib.layers.spatial_softmax(conv2, name='Conv2-ssm') 
-            #tf.summary.image('conv2_viz_smm1', tf.expand_dims(conv2_ssm[:,:,:,0], axis=3), 3)
-            tf.summary.image('conv2_viz_smm1', self.conv2_ssm[:,:,:], 3)
-            #tf.summary.image('conv2_viz_smm2', tf.expand_dims(conv2_ssm[:,:,:,0], axis=3), 3)
+            #self.conv2_ssm = tf.transpose(tf.reshape(conv2_ssm, [-1, conv2.shape[3], conv2.shape[1], conv2.shape[2]]), [0, 2, 3, 1])
+            ##conv2_ssm =  tf.contrib.layers.spatial_softmax(conv2, name='Conv2-ssm') 
+            ##tf.summary.image('conv2_viz_smm1', tf.expand_dims(conv2_ssm[:,:,:,0], axis=3), 2)
+            #tf.summary.image('conv2_viz_smm1', self.conv2_ssm[:,:,:,0:3], 2)
+            ##tf.summary.image('conv2_viz_smm2', tf.expand_dims(conv2_ssm[:,:,:,0], axis=3), 2)
+
+            ## Shift and convert
+            # conv2.shape = (None, 7, 7, 66)
+            conv2_shifted = tf.transpose(conv2, [0, 3, 1, 2])
+            # conv2_shifted.shape = (None, 66, 7, 7)
+            conv2_shifted_flat = tf.reshape(conv2_shifted, [-1, conv2_shifted.shape[1], conv2_shifted.shape[2:].num_elements()])
+            # conv2_shifted_flat.shape = (None, 66, 7*7)
+            conv2_ssm_flat = tf.nn.softmax(conv2_shifted_flat, axis=2)
+
+            ## Convert back to og format
+            conv2_shifted = tf.reshape(conv2_shifted_flat, [-1, conv2_shifted.shape[1], conv2_shifted.shape[2], conv2_shifted.shape[3]])
+            # conv2_shifted.shape = (None, 66, 7, 7)
+            self.conv2_ssm = tf.transpose(conv2_shifted, [0, 2, 3, 1])
+            # conv2_ssm.shape = (None, 7, 7, 66)
+            tf.summary.image('conv2_viz_smm', self.conv2_ssm[:,:,:,0:3], 2)
+
+            
 
             # Fully Connected Layers
             with tf.name_scope('FC1'):
-                h_flat = tf.layers.flatten(conv2_ssm)
+                h_flat = tf.layers.flatten(self.conv2_ssm)
                 W_fc1 = weight_variable([h_flat.shape[1:].num_elements(), self.input.shape[1:].num_elements()])
                 b_fc1 = bias_variable([self.input.shape[1:].num_elements()])
                 
                 self.input_hat = tf.nn.relu(tf.matmul(h_flat, W_fc1) + b_fc1)
                 self.input_hat = tf.reshape(self.input_hat, shape=(-1,)+self.input_shape[1:])
-                tf.summary.image('Recon', self.input_hat, 3)
+                tf.summary.image('Recon', self.input_hat, 2)
 
 
             with tf.name_scope('Objective'):
@@ -113,8 +132,15 @@ class Model:
 
         # Merge Summaries and Create Summary Writer for TB
         self.all_summaries = tf.summary.merge_all()
+        print('Creating Writer:')
         self.writer = tf.summary.FileWriter(BASE_LOGDIR + RUN)
         self.writer.add_graph(self.sess.graph) 
+        print(self.writer)
+        print(self.writer.get_logdir())
+        # For debugging
+        import os
+        for i in range(10):
+            print('InModel:', os.getcwd())
 
     def train_step(self, batch_x, cur_step):
         with self.sess.as_default():
@@ -122,6 +148,14 @@ class Model:
             print('Step: ', str(cur_step), 'MSE: ' + str(mse_out))
             self.writer.add_summary(all_sums_out, cur_step) 
             self.train.run(feed_dict={self.input: batch_x})
+            self.writer.flush()
+            file = open('~/testfile.txt','w') 
+            file.write('Hello World') 
+            file.write('This is our new text file') 
+            file.write('and this is another line.') 
+            file.write('Why? Because we can.') 
+
+            file.close() 
 
 
 

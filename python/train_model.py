@@ -18,9 +18,14 @@ import random_dataset
 # For the model that we will train
 import model
 
+# For debugging
+import os
+for i in range(10):
+    print(os.getcwd())
+
 ds = random_dataset.dml_dataset()
 model = model.Model(ds.shape)
 
-for i in range(10000):
+for i in range(1000000):
     batch = ds.get_batch()
     model.train_step(batch, i)

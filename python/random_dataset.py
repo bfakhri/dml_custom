@@ -156,7 +156,7 @@ class SpringAgent(object):
 
 
 class dml_dataset:
-    def __init__(self, length=100, width=28, height=28, fps=60, level='tests/empty_room_test2',):
+    def __init__(self, length=512, width=28, height=28, fps=60, level='tests/empty_room_test2',):
         """Spins up an environment and runs the random agent."""
         self.length = length
         self.width = width
