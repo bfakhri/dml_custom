@@ -8,7 +8,7 @@ import numpy as np
 ## Base Dir to write logs to
 BASE_LOGDIR = './logs/'
 ## Subdirectory for this experiment
-RUN = '3'
+RUN = '4'
 ## Learning Rate for Adam Optimizer
 LEARN_RATE = 1e-4
 ## Number of images to push through the network at a time
@@ -96,7 +96,7 @@ class Model:
             conv2_ssm_flat = tf.nn.softmax(conv2_shifted_flat, axis=2)
 
             ## Convert back to og format
-            conv2_shifted = tf.reshape(conv2_shifted_flat, [-1, conv2_shifted.shape[1], conv2_shifted.shape[2], conv2_shifted.shape[3]])
+            conv2_shifted = tf.reshape(conv2_ssm_flat, [-1, conv2_shifted.shape[1], conv2_shifted.shape[2], conv2_shifted.shape[3]])
             # conv2_shifted.shape = (None, 66, 7, 7)
             self.conv2_ssm = tf.transpose(conv2_shifted, [0, 2, 3, 1])
             # conv2_ssm.shape = (None, 7, 7, 66)
