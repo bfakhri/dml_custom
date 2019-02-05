@@ -44,7 +44,10 @@ pickups.defaults = {
       classname = 'apple_reward',
       model = 'models/apple.md3',
       quantity = 7,
-      type = pickups.type.REWARD
+      type = pickups.type.REWARD,
+      --move_type = pickups.moveType.STATIC,
+      --Make it static
+      tag = pickups.moveType.STATIC,
   },
   lemon_reward = {
       name = 'Lemon',
